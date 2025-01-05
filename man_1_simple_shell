@@ -1,0 +1,46 @@
+.TH simple_shell 1 "January 2025" "Simple Shell" "User Commands"
+.SH NAME
+simple_shell \- a simple UNIX command interpreter
+.SH SYNOPSIS
+.B simple_shell
+.SH DESCRIPTION
+.B simple_shell
+is a simple UNIX command interpreter that provides a command-line interface for users to execute commands.
+
+The following built-in commands are supported:
+.TP
+.B cd [DIRECTORY]
+Changes the current directory to DIRECTORY. If DIRECTORY is not specified, the home directory is used.
+.TP
+.B exit [STATUS]
+Exits the shell with a status of STATUS. If STATUS is not specified, the exit status of the last command executed is used.
+.TP
+.B help
+Displays information about built-in commands.
+
+.SH EXAMPLES
+.TP
+.B simple_shell
+Launches the simple shell.
+.TP
+.B cd ..
+Changes the current directory to the parent directory.
+.TP
+.B echo "Hello, world!"
+Prints "Hello, world!" to the terminal.
+.TP
+.B exit 0
+Exits the shell with a status of 0.
+
+.SH AUTHOR
+.B Djenkal Yamina Sakho Zeyneb 
+.br
+.br
+GitHub: https://github.com/Yaminadjenkal
+https://github.com/zineb479
+
+.SH SEE ALSO
+.BR sh (1), 
+.BR bash (1)
+
+
