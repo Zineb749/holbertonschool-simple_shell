@@ -1,18 +1,25 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <errno.h>
 
 /**
  * print_prompt - Prints the shell prompt.
  */
 void print_prompt(void)
 {
-	write(STDOUT_FILENO, ":)", 2);
+	write(STDOUT_FILENO, ":) ", 3);
 }
 
 /**
  * read_input - Reads user input from stdin.
  * @n: Pointer to the size of the input buffer.
  *
- * Return: A pointer to the buffer containing the input.
+ * Return: A pointer to the buffer containing the input, or NULL on EOF.
  */
 char *read_input(size_t *n)
 {
@@ -21,7 +28,13 @@ char *read_input(size_t *n)
 
 	if (nread == -1)
 	{
-		perror("Exiting shell");
+		if (feof(stdin))
+		{
+			free(buf);
+			write(STDOUT_FILENO, "\n", 1);
+			exit(0);
+		}
+		perror("Error reading input");
 		free(buf);
 		exit(1);
 	}
@@ -37,10 +50,7 @@ char *read_input(size_t *n)
  */
 char **parse_input(char *buf)
 {
-	char **array = malloc(sizeof(char *) * 1000);
-	char *token;
-	int i = 0;
-
+	char **array = malloc(sizeof(char *) * 2);
 	if (!array)
 	{
 		perror("Memory allocation failed");
@@ -48,15 +58,9 @@ char **parse_input(char *buf)
 		exit(1);
 	}
 
-	token = strtok(buf, "\n");
-	while (token)
-	{
-		array[i] = token;
-		token = strtok(NULL, "\n");
-		i++;
-	}
-
-	array[i] = NULL;
+	buf[strcspn(buf, "\n")] = '\0';
+	array[0] = buf;
+	array[1] = NULL;
 
 	return (array);
 }
@@ -64,37 +68,35 @@ char **parse_input(char *buf)
 /**
  * execute_command - Executes a command using fork and execve.
  * @array: The array of command arguments.
- * @buf: The input buffer.
  */
-void execute_command(char **array, char *buf)
+void execute_command(char **array)
 {
 	pid_t child_pid = fork();
 
 	if (child_pid == -1)
 	{
-		perror("Child not created.");
+		perror("Error creating child process");
+		free(array[0]);
 		free(array);
-		free(buf);
-		exit(41);
+		exit(1);
 	}
 
 	if (child_pid == 0)
 	{
-		if (execve(array[0], array, NULL) == -1)
+		extern char **environ;
+
+		if (execve(array[0], array, environ) == -1)
 		{
-			perror("Failed to execute");
+			perror("Command not found");
+			free(array[0]);
 			free(array);
-			free(buf);
-			exit(97);
+			exit(127);
 		}
 	}
 	else
 	{
 		int status;
-
 		wait(&status);
-
-		free(array);
 	}
 }
 
@@ -119,11 +121,18 @@ int main(int argc, char *argv[])
 
 		buf = read_input(&n);
 
+		if (strlen(buf) == 0)
+		{
+			free(buf);
+			continue;
+		}
+
 		char **array = parse_input(buf);
 
-		execute_command(array, buf);
+		execute_command(array);
 
-		free(buf);
+		free(array[0]);
+		free(array);
 	}
 
 	return (0);
