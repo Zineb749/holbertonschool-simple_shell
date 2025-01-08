@@ -1,124 +1,13 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
-
 /**
- * print_prompt - Prints the shell prompt ":) " to STDOUT.
- * This function is responsible for displaying a simple prompt to the user
- * before waiting for the next command input.
- */
-void print_prompt(void)
-{
-	write(STDOUT_FILENO, ":) ", 3);
-}
-
-/**
- * read_input - Reads user input from stdin.
- * @n: Pointer to the size of the input buffer.
- *
- * Return: A pointer to the buffer containing the user input.
- * This function reads a line of input from the user and returns it.
- * If reading fails or EOF is encountered, it will exit the program.
- */
-char *read_input(size_t *n)
-{
-	char *buf = NULL;
-	ssize_t nread = getline(&buf, n, stdin);
-
-	if (nread == -1)
-	{
-		if (feof(stdin))
-		{
-			free(buf);
-			write(STDOUT_FILENO, "\n", 1);
-			exit(0);
-		}
-		perror("Error reading input");
-		free(buf);
-		exit(1);
-	}
-
-	return (buf);
-}
-
-/**
- * parse_input - Parses the input buffer into an array of tokens.
- * @buf: The input buffer to tokenize.
- *
- * Return: An array of strings (tokens).
- * This function splits the input string into tokens based on whitespace
- * and stores them in an array.
- */
-char **parse_input(char *buf)
-{
-	char **array = malloc(sizeof(char *) * 2);
-
-	if (!array)
-	{
-		perror("Memory allocation failed");
-		free(buf);
-		exit(1);
-	}
-
-	buf[strcspn(buf, "\n")] = '\0';
-	array[0] = buf;
-	array[1] = NULL;
-
-	return (array);
-}
-
-/**
- * execute_command - Executes the command using fork and execve system call.
- * @array: The array of command arguments.
- *
- * This function forks a child process and uses execve to execute the command.
- * If execution fails, an error message is printed.
- */
-void execute_command(char **array)
-{
-	pid_t child_pid = fork();
-
-	if (child_pid == -1)
-	{
-		perror("Error creating child process");
-		free(array[0]);
-		free(array);
-		exit(1);
-	}
-
-	if (child_pid == 0)
-	{
-		if (execve(array[0], array, NULL) == -1)
-		{
-			perror("Command not found");
-			free(array[0]);
-			free(array);
-			exit(127);
-		}
-	}
-	else
-	{
-		int status;
-
-		wait(&status);
-	}
-}
-
-/**
- * main - Main entry point for the shell program.
- * It prints the prompt, reads user input, parses it, and executes the command.
+ * main - Entry point for the shell program.
  * @argc: Argument count.
  * @argv: Argument vector.
  *
- * Return: 0 on successful execution.
- * This function continuously loops, displaying the prompt, reading the user's
- * input, and executing the command. If the user provides an empty input or
- * if an error occurs, the loop continues.
+ * Runs an infinite loop, displaying a prompt, reading user input,
+ * parsing the input, and executing commands. Exits on user command or error.
+ *
+ * Return: 0 on success.
  */
 
 int main(int argc, char *argv[])
