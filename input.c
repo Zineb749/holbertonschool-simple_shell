@@ -3,9 +3,8 @@
  * read_input - Reads a line of input from stdin.
  * @n: Pointer to the buffer size.
  *
- * Returns the input buffer or exits on error (EOF or read failure).
+ * Return: A pointer to the input buffer or exits on error.
  */
-
 char *read_input(size_t *n)
 {
 	char *buf = NULL;
@@ -26,11 +25,12 @@ char *read_input(size_t *n)
 
 	return (buf);
 }
+
 /**
  * parse_input - Tokenizes input into an array of strings.
  * @buf: The input string.
  *
- * Returns a dynamically allocated array with the input as the first element and NULL as the second.
+ * Return: A dynamically allocated array.
  */
 char **parse_input(char *buf)
 {
