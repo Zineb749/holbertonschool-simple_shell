@@ -14,29 +14,30 @@
  * child process to complete using waitpid().
  */
 
-void execute_command(char *cmd) 
+void execute_command(char *cmd)
 {
 	pid_t pid = fork();
 
-	if (pid == -1) 
+	if (pid == -1)
 	{
 		perror("fork");
 		exit(EXIT_FAILURE);
 	}
 
-	if (pid == 0) 
+	if (pid == 0)
 	{
 		char *args[2];
+
 		args[0] = cmd;
 		args[1] = NULL;
 
-		if (execve(cmd, args, NULL) == -1) 
+		if (execve(cmd, args, NULL) == -1)
 		{
 			perror("./hsh");
 			exit(EXIT_FAILURE);
 		}
-	} 
-	else 
+	}
+	else
 	{
 		waitpid(pid, NULL, 0);
 	}
