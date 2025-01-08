@@ -120,15 +120,15 @@ void execute_command(char **array)
  * input, and executing the command. If the user provides an empty input or
  * if an error occurs, the loop continues.
  */
+
 int main(int argc, char *argv[])
 {
+	size_t n;
+	char *buf;
+	char **array;
 
 	(void)argc;
 	(void)argv;
-
-	size_t n; 
-	char *buf;
-	char **array;
 
 	while (1)
 	{
