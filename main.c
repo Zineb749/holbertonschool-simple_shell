@@ -8,9 +8,7 @@
 /**
  * execute_command - Executes a command in a child process.
  * @cmd: Command to execute.
- * @prog_name: Shell program's name (argv[0]).
- *
- * If execution fails, prints an error using prog_name.
+ * @prog_name: Name of the shell program (argv[0]).
  */
 void execute_command(char *cmd, char *prog_name)
 {
@@ -31,25 +29,34 @@ void execute_command(char *cmd, char *prog_name)
 
 		if (execve(cmd, args, NULL) == -1)
 		{
+
 			fprintf(stderr, "%s: 1: %s: not found\n", prog_name, cmd);
 			exit(EXIT_FAILURE);
 		}
-	}
-	else
+	} else
 	{
+
+
 		waitpid(pid, NULL, 0);
 	}
 }
 
 /**
- * main - Entry point of the shell.
- * @argc: Argument count.
- * @argv: Argument vector.
- *
- * Reads commands from input, executes them, and prints errors if needed.
+ * handle_error - Handles errors by printing the program and error message.
+ * @prog_name: The program name (argv[0]).
+ * @cmd: The command that caused the error.
+ */
+void handle_error(char *prog_name, char *cmd)
+{
+	fprintf(stderr, "%s: 1: %s: not found\n", prog_name, cmd);
+}
+
+/**
+ * main - Entry point of the shell program.
+ * @argc: Argument count (not used).
+ * @argv: Argument vector (used to get the program name).
  * Return: 0.
  */
-
 int main(int argc, char **argv)
 {
 	char *cmd = NULL;
@@ -60,8 +67,9 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
+
 		if (isatty(STDIN_FILENO))
-			printf(":] ");
+			printf(":) ");
 
 		nread = getline(&cmd, &len, stdin);
 		if (nread == -1)
@@ -73,7 +81,9 @@ int main(int argc, char **argv)
 		cmd[strcspn(cmd, "\n")] = '\0';
 
 		if (strlen(cmd) > 0)
+		{
 			execute_command(cmd, argv[0]);
+		}
 	}
 
 	free(cmd);
