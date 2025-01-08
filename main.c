@@ -8,7 +8,9 @@
 #include <errno.h>
 
 /**
- * print_prompt - Prints the shell prompt.
+ * print_prompt - Prints the shell prompt ":) " to STDOUT.
+ * This function is responsible for displaying a simple prompt to the user
+ * before waiting for the next command input.
  */
 void print_prompt(void)
 {
@@ -19,7 +21,9 @@ void print_prompt(void)
  * read_input - Reads user input from stdin.
  * @n: Pointer to the size of the input buffer.
  *
- * Return: A pointer to the buffer containing the input, or NULL on EOF.
+ * Return: A pointer to the buffer containing the user input.
+ * This function reads a line of input from the user and returns it.
+ * If reading fails or EOF is encountered, it will exit the program.
  */
 char *read_input(size_t *n)
 {
@@ -43,14 +47,17 @@ char *read_input(size_t *n)
 }
 
 /**
- * parse_input - Parses the input into an array of tokens.
+ * parse_input - Parses the input buffer into an array of tokens.
  * @buf: The input buffer to tokenize.
  *
  * Return: An array of strings (tokens).
+ * This function splits the input string into tokens based on whitespace
+ * and stores them in an array.
  */
 char **parse_input(char *buf)
 {
 	char **array = malloc(sizeof(char *) * 2);
+
 	if (!array)
 	{
 		perror("Memory allocation failed");
@@ -66,8 +73,11 @@ char **parse_input(char *buf)
 }
 
 /**
- * execute_command - Executes a command using fork and execve.
+ * execute_command - Executes the command using fork and execve system call.
  * @array: The array of command arguments.
+ *
+ * This function forks a child process and uses execve to execute the command.
+ * If execution fails, an error message is printed.
  */
 void execute_command(char **array)
 {
@@ -83,9 +93,7 @@ void execute_command(char **array)
 
 	if (child_pid == 0)
 	{
-		extern char **environ;
-
-		if (execve(array[0], array, environ) == -1)
+		if (execve(array[0], array, NULL) == -1)
 		{
 			perror("Command not found");
 			free(array[0]);
@@ -96,24 +104,31 @@ void execute_command(char **array)
 	else
 	{
 		int status;
+
 		wait(&status);
 	}
 }
 
 /**
- * main - Main entry point for the shell.
+ * main - Main entry point for the shell program.
+ * It prints the prompt, reads user input, parses it, and executes the command.
  * @argc: Argument count.
  * @argv: Argument vector.
  *
- * Return: 0 on success.
+ * Return: 0 on successful execution.
+ * This function continuously loops, displaying the prompt, reading the user's
+ * input, and executing the command. If the user provides an empty input or
+ * if an error occurs, the loop continues.
  */
 int main(int argc, char *argv[])
 {
+
 	(void)argc;
 	(void)argv;
 
-	size_t n = 0;
+	size_t n; 
 	char *buf;
+	char **array;
 
 	while (1)
 	{
@@ -127,7 +142,7 @@ int main(int argc, char *argv[])
 			continue;
 		}
 
-		char **array = parse_input(buf);
+		array = parse_input(buf);
 
 		execute_command(array);
 
