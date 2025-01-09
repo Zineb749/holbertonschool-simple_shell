@@ -1,5 +1,5 @@
-#ifndef SHELL_H
-#define SHELL_H
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,14 +7,12 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
-extern char **environ;
+void print_prompt(void);
+char *read_input(size_t *n);
+char **parse_input(char *buf);
+void execute_command(char **array, char *program_name);
 
-void display_prompt_and_read_input(char **buffer, size_t *buffer_size);
-int tokenize_input(char *buffer, char **memory);
-void handle_internal_commands(char **memory, int count);
-void execute_external_commands(char **memory, char *buffer);
-void free_memory(char **memory, int count);
-
-#endif
+#endif /* MAIN_H */
 
