@@ -36,4 +36,4 @@ $ pwd /home/user
 $ exit 
 $
 
-Feel free to modify this template according to your project's specifics. If you need any more help, just let me know!
+![name given image(1)](https://cdn.discordapp.com/attachments/423566282051551234/1326915644058505308/flowchart_shell.png?ex=678129fe&is=677fd87e&hm=3642bb4a44a579ca7a73d8f5926bd18eba0bf17d9720ec6df7726dde2e6a863a&)
