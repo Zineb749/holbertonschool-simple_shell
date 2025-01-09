@@ -4,7 +4,6 @@
  * tokenize_input - Analyse l'entrée en tokens
  * @buffer: buffer contenant l'entrée de l'utilisateur
  * @memory: tableau pour stocker les tokens
- * 
  * Return: le nombre de tokens ou -1 en cas d'erreur
  */
 int tokenize_input(char *buffer, char **memory)

@@ -7,12 +7,12 @@
  */
 void free_memory(char **memory, int count)
 {
-    int i;
+	int i;
 
-    for (i = 0; i < count; i++)
-    {
-        free(memory[i]);
-    }
-    free(memory);
+	for (i = 0; i < count; i++)
+	{
+		free(memory[i]);
+	}
+	free(memory);
 }
 
